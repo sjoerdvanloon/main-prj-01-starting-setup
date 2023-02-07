@@ -41,7 +41,7 @@ export default {
       console.error(
         `Something went wrong when fetching requests for ${coachId}`
       );
-      const error = new Error(responseData.message || 'Failed to post request');
+      const error = new Error(responseData.message || 'Failed GET request');
       throw error;
     }
 

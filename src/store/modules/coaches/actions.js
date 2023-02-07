@@ -1,3 +1,6 @@
+//import { convertCoachDtoToCoachState } from './dtoToStoreTypeConverter.js';
+import { convertCoachDtoToCoachState } from './imextest.js';
+
 export default {
   async loadCoaches(context, payload) {
     console.log('actions', 'loadCoaches');
@@ -12,36 +15,34 @@ export default {
       );
       return;
     }
+    const convert = convertCoachDtoToCoachState;
+    // alert(sayHi);
+    //sayBye('ausdd');
+    //console.log('Start', convertCoachDtoToCoachState);
+    this.$axios
+      .get('coaches.json')
+      .then((x) => {
+        // Transform
 
-    var response = await fetch(
-      'https://coaches-dfbb0-default-rtdb.europe-west1.firebasedatabase.app/coaches.json'
-    );
+        const coaches = [];
+        for (const key in x.data) {
+          const coach = convert(key, x);
+          coaches.push(coach);
+        }
+        console.log('coaches', coaches);
+        context.commit('setCoaches', coaches);
+        context.commit('setFetchTimestamp');
+      })
+      .catch((x) => {
+        console.error('Something went wrong');
+        const error = new Error(x.data || 'Failed to fetch');
+        throw error;
+      });
 
-    if (!response.ok) {
-      console.error('Something went wrong');
-      const error = new Error(responseData.message || 'Failed to fetch');
-      throw error;
-    }
+    // if (response.status != 200) {
 
-    const responseData = await response.json();
-
-    // Transform
-
-    const coaches = [];
-    for (const key in responseData) {
-      const coach = {
-        firstName: responseData[key].firstName,
-        lastName: responseData[key].lastName,
-        description: responseData[key].description,
-        areas: responseData[key].areas,
-        hourlyRate: responseData[key].hourlyRate,
-        id: key,
-      };
-      coaches.push(coach);
-    }
-
-    context.commit('setCoaches', coaches);
-    context.commit('setFetchTimestamp');
+    // }
+    // console.log('End');
   },
 
   async addCoach(context, payload) {

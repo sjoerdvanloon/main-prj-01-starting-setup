@@ -104,6 +104,8 @@ export default {
   },
   created() {
     this.loadCoaches(false);
+
+    //console.warn('KOEENENE', this.$axios.get('fskfds'));
   },
 };
 </script>
